@@ -50,7 +50,8 @@ jobs:
           
       # Sube el .ipa como artifact (opcional)
       - name: Upload IPA
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-app
           path: ./output/YourApp.ipa
+          if-no-files-found: error  # Opcional: falla si no hay .ipa
