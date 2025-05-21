@@ -31,7 +31,7 @@ kotlin {
             export(compose.runtime)
             export(compose.foundation)
             export(compose.material)
-            // export(project(":shared")) // Descomenta si tienes módulo shared
+            export(project(":shared")) // Descomenta si tienes módulo shared
         }
     }
 
