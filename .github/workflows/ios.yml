@@ -21,7 +21,11 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
 
-      # Compila el framework de KMP para iOS
+      # Asegura permisos para gradlew
+      - name: Set gradlew permissions
+        run: chmod +x ./gradlew
+
+      # Compila el framework de KMP
       - name: Build KMP for iOS
         run: ./gradlew :shared:linkReleaseFrameworkIosArm64
 
