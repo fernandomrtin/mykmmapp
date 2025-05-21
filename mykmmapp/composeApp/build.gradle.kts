@@ -38,7 +38,6 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            export(project(":shared")) // Exporta dependencias si las hay
         }
     }
 
@@ -48,6 +47,7 @@ kotlin {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
+                implementation(project(":shared"))
             }
         }
         val commonMain by getting {
