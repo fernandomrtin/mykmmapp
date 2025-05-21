@@ -16,9 +16,11 @@ jobs:
           java-version: 17
 
       - name: Build iOS framework and generate podspec
+        working-directory: mykmmapp
         run: ./gradlew :composeApp:assembleReleaseXCFramework
 
       - name: Install CocoaPods
+        working-directory: mykmmapp/iosApp
         run: sudo gem install cocoapods
 
       - name: Pod install
