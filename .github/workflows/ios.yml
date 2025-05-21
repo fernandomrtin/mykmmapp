@@ -25,12 +25,12 @@ jobs:
 
       - name: Install Pods
         run: |
-          cd iosApp
+          cd mykmmapp/iosApp
           pod install
 
       - name: Build .ipa
         run: |
-          cd iosApp
+          cd mykmmapp/iosApp
           xcodebuild \
             -workspace iosApp.xcworkspace \
             -scheme iosApp \
