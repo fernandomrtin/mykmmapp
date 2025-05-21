@@ -21,12 +21,6 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
 
-      # Instala CocoaPods (si usas dependencias iOS nativas)
-      - name: Install CocoaPods
-        run: |
-          gem install cocoapods
-          pod install
-
       # Compila el framework de KMP para iOS
       - name: Build KMP for iOS
         run: ./gradlew :shared:linkReleaseFrameworkIosArm64
