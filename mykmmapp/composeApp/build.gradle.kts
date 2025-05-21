@@ -1,22 +1,23 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    kotlin("native.cocoapods") // ¡Este plugin es esencial!
 }
 
 kotlin {
+    // 1. Configuración de targets
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
         }
     }
 
+    jvm("desktop") // Target para Desktop (opcional)
+
+    // 2. Targets iOS (requeridos para XCFramework)
     listOf(
         iosX64(),
         iosArm64(),
@@ -24,79 +25,55 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = true
+            isStatic = true // Importante para iOS
+
+            // 3. Exporta dependencias necesarias
+            export(compose.runtime)
+            export(compose.foundation)
+            export(compose.material)
+            // export(project(":shared")) // Descomenta si tienes módulo shared
         }
     }
 
-    cocoapods {
-        summary = "Shared module for KMP"
-        homepage = "https://github.com/tu-repo"
-        version = "1.0"
-        ios.deploymentTarget = "15.0"
-        podfile = project.file("../iosApp/Podfile")
-
-        framework {
-            baseName = "shared"
-            isStatic = true
-        }
-    }
-
+    // 4. Configuración de sourceSets
     sourceSets {
-
-        val androidMain by getting {
-            dependencies {
-                implementation(compose.preview)
-                implementation(libs.androidx.activity.compose)
-                implementation(project(":shared"))
-            }
-        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material3)
+                implementation(compose.material)
                 implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.androidx.lifecycle.runtimeCompose)
+
+                // implementation(project(":shared")) // Descomenta si existe
             }
         }
-        val commonTest by getting {
+
+        val androidMain by getting {
             dependencies {
-                implementation(libs.kotlin.test)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.appcompat)
+            }
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
             }
         }
     }
 }
 
+// 5. Configuración Android obligatoria
 android {
-    namespace = "org.fernandommdev.mykmmapp"
+    namespace = "org.fernandommdev.mykmmapp" // Cambia a tu namespace
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.fernandommdev.mykmmapp"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 24
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
 
-dependencies {
-    debugImplementation(compose.uiTooling)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }

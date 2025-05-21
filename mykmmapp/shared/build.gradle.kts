@@ -1,21 +1,7 @@
-// shared/build.gradle.kts
 plugins {
     kotlin("multiplatform")
-    id("com.android.library") // Solo si necesitas Android
-}
-
-android {
-    namespace = "org.fernandommdev.mykmmapp"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = 21  // Mínimo SDK soportado
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+    id("com.android.library")
+    kotlin("native.cocoapods") // ¡Este plugin es esencial!
 }
 
 kotlin {
@@ -24,9 +10,28 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    cocoapods {
+        summary = "Shared module"
+        homepage = "https://github.com/fernandomrtin/mykmmapp"
+        version = "1.0"
+        ios.deploymentTarget = "15.0"
+        framework {
+            baseName = "shared"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
-            // Tus dependencias comunes aquí
+            // Tus dependencias compartidas
         }
+    }
+}
+
+android {
+    namespace = "org.fernandommdev.mykmmapp.shared"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = 24
     }
 }

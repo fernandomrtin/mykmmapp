@@ -1,4 +1,5 @@
+platform :ios, '15.0'
 target 'iosApp' do
-  # Ruta correcta para Compose Multiplatform
-  pod 'shared', :path => '../composeApp/build/cocoapods/framework/shared'
+  use_frameworks!
+  pod 'shared', :path => '../shared'
 end
