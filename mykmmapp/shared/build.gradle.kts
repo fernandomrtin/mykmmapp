@@ -5,7 +5,8 @@ plugins {
 }
 
 android {
-    compileSdk = 34  // Usa la última versión estable (o la que necesites)
+    namespace = "org.fernandommdev.mykmmapp"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = 21  // Mínimo SDK soportado
