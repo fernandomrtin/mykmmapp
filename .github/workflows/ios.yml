@@ -1,55 +1,49 @@
-name: Build iOS IPA
+name: Build iOS (KMM)
 
 on:
-  push:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: macOS-latest  # Usa un runner con macOS
+  build-ios:
+    runs-on: macos-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Configura Java y Kotlin
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
-      # Configura Xcode (necesario para compilar para iOS)
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
 
-      # Asegura permisos para gradlew
-      - name: Set gradlew permissions
-        run: chmod +x ./gradlew
-
-      # Compila el framework de KMP
-      - name: Build KMP for iOS
-        run: ./gradlew :shared:linkReleaseFrameworkIosArm64
-
-      # Genera el .xcarchive y .ipa usando Xcode
-      - name: Archive and Export IPA
+      - name: Install Pods
         run: |
-          xcodebuild archive \
+          cd iosApp
+          pod install
+
+      - name: Build .ipa
+        run: |
+          cd iosApp
+          xcodebuild \
             -workspace iosApp.xcworkspace \
             -scheme iosApp \
+            -sdk iphoneos \
             -configuration Release \
-            -archivePath iosApp.xcarchive \
-            -allowProvisioningUpdates \
-            -destination generic/platform=iOS
+            -archivePath $PWD/build/iosApp.xcarchive \
+            archive
 
-          xcodebuild -exportArchive \
-            -archivePath iosApp.xcarchive \
-            -exportPath ./output \
-            -exportOptionsPlist ExportOptions.plist \
-            -allowProvisioningUpdates
-          
-      # Sube el .ipa como artifact (opcional)
+          xcodebuild \
+            -exportArchive \
+            -archivePath $PWD/build/iosApp.xcarchive \
+            -exportPath $PWD/build/export \
+            -exportOptionsPlist ExportOptions.plist
+
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-app
-          path: ./output/YourApp.ipa
-          if-no-files-found: error  # Opcional: falla si no hay .ipa
+          name: iosApp.ipa
+          path: iosApp/build/export/*.ipa
