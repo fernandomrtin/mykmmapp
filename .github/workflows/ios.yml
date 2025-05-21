@@ -17,6 +17,9 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Show directory structure
+        run: ls -R
+        
       - name: Install CocoaPods
         run: sudo gem install cocoapods
 
