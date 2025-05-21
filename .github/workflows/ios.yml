@@ -6,47 +6,30 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Show directory structure
-        run: ls -R
-        
+      - name: Build iOS framework and generate podspec
+        run: ./gradlew :composeApp:assembleReleaseXCFramework
+
       - name: Install CocoaPods
         run: sudo gem install cocoapods
 
-      - name: Install Pods
+      - name: Pod install
+        working-directory: mykmmapp/iosApp
+        run: pod install
+
+      - name: Build .ipa with xcodebuild
+        working-directory: mykmmapp/iosApp
         run: |
-          cd mykmmapp/iosApp
-          pod install
-
-      - name: Build .ipa
-        run: |
-          cd mykmmapp/iosApp
-          xcodebuild \
-            -workspace iosApp.xcworkspace \
-            -scheme iosApp \
-            -sdk iphoneos \
-            -configuration Release \
-            -archivePath $PWD/build/iosApp.xcarchive \
-            archive
-
-          xcodebuild \
-            -exportArchive \
-            -archivePath $PWD/build/iosApp.xcarchive \
-            -exportPath $PWD/build/export \
-            -exportOptionsPlist ExportOptions.plist
-
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: iosApp.ipa
-          path: iosApp/build/export/*.ipa
+          xcodebuild -workspace iosApp.xcworkspace \
+                     -scheme iosApp \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     -derivedDataPath build

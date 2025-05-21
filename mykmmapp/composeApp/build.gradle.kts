@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("native.cocoapods") // ¡Este plugin es esencial!
 }
 
 kotlin {
@@ -16,7 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,25 +27,45 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    cocoapods {
+        summary = "Shared module for KMP"
+        homepage = "https://github.com/tu-repo"
+        version = "1.0"
+        ios.deploymentTarget = "15.0"
+        podfile = project.file("../iosApp/Podfile")
+
+        framework {
+            baseName = "shared"
+            isStatic = true
+            export(project(":shared")) // Exporta dependencias si las hay
+        }
+    }
+
     sourceSets {
-        
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
+
+        val androidMain by getting {
+            dependencies {
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+            }
         }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+            }
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
         }
     }
 }
@@ -80,4 +100,3 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
 }
-
