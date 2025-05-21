@@ -17,10 +17,12 @@ jobs:
 
       # Da permisos de ejecución al gradlew
       - name: Set executable permissions
+        working-directory: mykmmapp
         run: chmod +x gradlew
 
       # Verifica los permisos (opcional para debug)
       - name: Check permissions
+        working-directory: mykmmapp
         run: ls -la gradlew
 
       - name: Build iOS framework and generate podspec
