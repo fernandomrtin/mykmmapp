@@ -61,6 +61,8 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(libs.material3)
+
                 implementation(compose.material)
                 implementation(compose.ui)
 
