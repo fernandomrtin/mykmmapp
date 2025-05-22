@@ -27,7 +27,7 @@ jobs:
 
       - name: Build iOS framework and generate podspec
         working-directory: mykmmapp
-        run: ./gradlew :shared:assembleReleaseXCFramework
+        run: ./gradlew :shared:assembleComposeAppReleaseXCFramework
 
       - name: Install CocoaPods
         working-directory: mykmmapp/iosApp
