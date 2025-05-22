@@ -22,7 +22,7 @@ kotlin {
         summary = "Shared module"
         homepage = "https://github.com/fernandomrtin/mykmmapp"
         version = "1.0"
-        ios.deploymentTarget = "15.4"
+        ios.deploymentTarget = "16"
         framework {
             baseName = "shared"
             isStatic = true
