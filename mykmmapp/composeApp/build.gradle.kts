@@ -21,11 +21,6 @@ kotlin {
         }
     }
 
-    // 2. Targets iOS (requeridos para XCFramework)
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
     // 4. Configuración de sourceSets
     sourceSets {
         val commonMain by getting {
