@@ -44,6 +44,10 @@ jobs:
         working-directory: mykmmapp/iosApp
         run: pod install
 
+      - name: List Xcode Schemes
+        working-directory: mykmmapp/iosApp
+        run: xcodebuild -list -workspace iosApp.xcworkspace
+
       - name: Build .ipa with xcodebuild
         working-directory: mykmmapp/iosApp
         run: |
