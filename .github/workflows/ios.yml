@@ -33,6 +33,10 @@ jobs:
         working-directory: mykmmapp/iosApp
         run: sudo gem install cocoapods
 
+      - name: Generate dummy framework (required by CocoaPods)
+        working-directory: mykmmapp
+        run: ./gradlew :shared:generateDummyFramework
+
       - name: Pod install
         working-directory: mykmmapp/iosApp
         run: pod install
