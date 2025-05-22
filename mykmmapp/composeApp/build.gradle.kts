@@ -38,22 +38,9 @@ kotlin {
     jvm("desktop") // Target para Desktop (opcional)
 
     // 2. Targets iOS (requeridos para XCFramework)
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true // Importante para iOS
-
-            // 3. Exporta dependencias necesarias
-            export(compose.runtime)
-            export(compose.foundation)
-            export(compose.material)
-            export(project(":shared")) // Descomenta si tienes módulo shared
-        }
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     // 4. Configuración de sourceSets
     sourceSets {
@@ -61,10 +48,10 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(libs.material3)
-
                 implementation(compose.material)
                 implementation(compose.ui)
+
+                implementation(libs.material3)
 
                 implementation(project(":shared")) // Descomenta si existe
             }
@@ -74,12 +61,6 @@ kotlin {
             dependencies {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.appcompat)
-            }
-        }
-
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
             }
         }
     }
