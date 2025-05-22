@@ -26,10 +26,6 @@ kotlin {
             // Tus dependencias compartidas
         }
     }
-
-    tasks.register("assembleReleaseXCFramework") {
-        dependsOn("assembleSharedReleaseXCFramework")
-    }
 }
 
 android {

@@ -13,29 +13,13 @@ kotlin {
         compilations.all {
             // "this" aquí es cada KotlinCompilation (por ejemplo, debug, release)
             this.compileTaskProvider.configure {
-                // "this" aquí es la tarea de compilación específica (por ejemplo, KotlinCompile)
-                // Usamos una aserción de tipo o un cast inteligente para acceder a las compilerOptions específicas de JVM
-                // ya que compilerOptions genéricas existen para todas las tareas de Kotlin.
-                // Sin embargo, para Kotlin/JVM, las compilerOptions son de tipo KotlinJvmCompilerOptions.
-                // El DSL moderno ya suele inferir esto correctamente dentro de `compilerOptions.configure`
-                // para una tarea de compilación JVM.
-
                 // Forma moderna y más directa con el DSL anidado:
                 compilerOptions {
                     jvmTarget.set(JvmTarget.JVM_17)
-                    // freeCompilerArgs.add("-Xjvm-default=all") // Ejemplo
-                    // otras opciones...
                 }
-
-                // Forma alternativa más explícita si necesitas el tipo exacto:
-                // (this as? org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile)?.let { task ->
-                //    task.compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-                // }
             }
         }
     }
-
-    jvm("desktop") // Target para Desktop (opcional)
 
     // 2. Targets iOS (requeridos para XCFramework)
     iosX64()
