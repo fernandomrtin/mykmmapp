@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$/mykmmapp" />
             <option value="$PROJECT_DIR$/mykmmapp/composeApp" />
+            <option value="$PROJECT_DIR$/mykmmapp/shared" />
           </set>
         </option>
       </GradleProjectSettings>

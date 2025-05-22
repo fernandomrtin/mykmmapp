@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget // Necesitarás este import
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -9,8 +11,26 @@ kotlin {
     // 1. Configuración de targets
     androidTarget {
         compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
+            // "this" aquí es cada KotlinCompilation (por ejemplo, debug, release)
+            this.compileTaskProvider.configure {
+                // "this" aquí es la tarea de compilación específica (por ejemplo, KotlinCompile)
+                // Usamos una aserción de tipo o un cast inteligente para acceder a las compilerOptions específicas de JVM
+                // ya que compilerOptions genéricas existen para todas las tareas de Kotlin.
+                // Sin embargo, para Kotlin/JVM, las compilerOptions son de tipo KotlinJvmCompilerOptions.
+                // El DSL moderno ya suele inferir esto correctamente dentro de `compilerOptions.configure`
+                // para una tarea de compilación JVM.
+
+                // Forma moderna y más directa con el DSL anidado:
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_17)
+                    // freeCompilerArgs.add("-Xjvm-default=all") // Ejemplo
+                    // otras opciones...
+                }
+
+                // Forma alternativa más explícita si necesitas el tipo exacto:
+                // (this as? org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile)?.let { task ->
+                //    task.compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+                // }
             }
         }
     }
@@ -44,7 +64,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.ui)
 
-                // implementation(project(":shared")) // Descomenta si existe
+                implementation(project(":shared")) // Descomenta si existe
             }
         }
 
